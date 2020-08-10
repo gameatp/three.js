@@ -1,7 +1,3 @@
-/**
- * @author mrdoob / http://mrdoob.com/
- */
-
 import {
 	BufferAttribute,
 	BufferGeometry,
@@ -29,7 +25,7 @@ var BufferGeometryUtils = {
 			 attributes.normal === undefined ||
 			 attributes.uv === undefined ) {
 
-			console.warn( 'THREE.BufferGeometry: Missing required attributes (index, position, normal or uv) in BufferGeometry.computeTangents()' );
+			console.error( 'THREE.BufferGeometryUtils: .computeTangents() failed. Missing required attributes (index, position, normal or uv)' );
 			return;
 
 		}
@@ -206,10 +202,12 @@ var BufferGeometryUtils = {
 		for ( var i = 0; i < geometries.length; ++ i ) {
 
 			var geometry = geometries[ i ];
+			var attributesCount = 0;
 
 			// ensure that all geometries are indexed, or none
 
 			if ( isIndexed !== ( geometry.index !== null ) ) {
+
 				console.error( 'THREE.BufferGeometryUtils: .mergeBufferGeometries() failed with geometry at index ' + i + '. All geometries must have compatible attributes; make sure index attribute exists among all geometries, or in none of them.' );
 				return null;
 
@@ -229,6 +227,17 @@ var BufferGeometryUtils = {
 				if ( attributes[ name ] === undefined ) attributes[ name ] = [];
 
 				attributes[ name ].push( geometry.attributes[ name ] );
+
+				attributesCount ++;
+
+			}
+
+			// ensure geometries have the same number of attributes
+
+			if ( attributesCount !== attributesUsed.size ) {
+
+				console.error( 'THREE.BufferGeometryUtils: .mergeBufferGeometries() failed with geometry at index ' + i + '. Make sure all geometries have the same number of attributes.' );
+				return null;
 
 			}
 
@@ -384,7 +393,6 @@ var BufferGeometryUtils = {
 		for ( var i = 0; i < attributes.length; ++ i ) {
 
 			var attribute = attributes[ i ];
-
 
 			if ( attribute.isInterleavedBufferAttribute ) {
 

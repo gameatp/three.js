@@ -1,6 +1,4 @@
-/**
- * @author mrdoob / http://mrdoob.com/
- */
+console.warn( "THREE.BufferGeometryUtils: As part of the transition to ES6 Modules, the files in 'examples/js' were deprecated in May 2020 (r117) and will be deleted in December 2020 (r124). You can find more information about developing using ES6 Modules in https://threejs.org/docs/#manual/en/introduction/Installation." );
 
 THREE.BufferGeometryUtils = {
 
@@ -194,6 +192,7 @@ THREE.BufferGeometryUtils = {
 		for ( var i = 0; i < geometries.length; ++ i ) {
 
 			var geometry = geometries[ i ];
+			var attributesCount = 0;
 
 			// ensure that all geometries are indexed, or none
 
@@ -218,6 +217,17 @@ THREE.BufferGeometryUtils = {
 				if ( attributes[ name ] === undefined ) attributes[ name ] = [];
 
 				attributes[ name ].push( geometry.attributes[ name ] );
+
+				attributesCount ++;
+
+			}
+
+			// ensure geometries have the same number of attributes
+
+			if ( attributesCount !== attributesUsed.size ) {
+
+				console.error( 'THREE.BufferGeometryUtils: .mergeBufferGeometries() failed with geometry at index ' + i + '. Make sure all geometries have the same number of attributes.' );
+				return null;
 
 			}
 

@@ -1,20 +1,17 @@
-/**
- * Based on http://www.emagix.net/academic/mscs-project/item/camera-sync-with-css3-and-webgl-threejs
- * @author mrdoob / http://mrdoob.com/
- * @author yomotsu / https://yomotsu.net/
- */
-
 import {
 	Matrix4,
 	Object3D,
 	Vector3
 } from "../../../build/three.module.js";
+/**
+ * Based on http://www.emagix.net/academic/mscs-project/item/camera-sync-with-css3-and-webgl-threejs
+ */
 
 var CSS3DObject = function ( element ) {
 
 	Object3D.call( this );
 
-	this.element = element;
+	this.element = element || document.createElement( 'div' );
 	this.element.style.position = 'absolute';
 	this.element.style.pointerEvents = 'auto';
 
@@ -34,8 +31,21 @@ var CSS3DObject = function ( element ) {
 
 };
 
-CSS3DObject.prototype = Object.create( Object3D.prototype );
-CSS3DObject.prototype.constructor = CSS3DObject;
+CSS3DObject.prototype = Object.assign( Object.create( Object3D.prototype ), {
+
+	constructor: CSS3DObject,
+
+	copy: function ( source, recursive ) {
+
+		Object3D.prototype.copy.call( this, source, recursive );
+
+		this.element = source.element.cloneNode( true );
+
+		return this;
+
+	}
+
+} );
 
 var CSS3DSprite = function ( element ) {
 
@@ -76,6 +86,7 @@ var CSS3DRenderer = function () {
 	domElement.appendChild( cameraElement );
 
 	var isIE = /Trident/i.test( navigator.userAgent );
+	var isSafari = /Safari/.test( navigator.userAgent ) && ! /Chrome/.test( navigator.userAgent );
 
 	this.getSize = function () {
 
@@ -216,7 +227,7 @@ var CSS3DRenderer = function () {
 				cache.objects.set( object, objectData );
 
 			}
-			
+
 			element.style.display = object.visible ? '' : 'none';
 
 			if ( element.parentNode !== cameraElement ) {
@@ -324,8 +335,17 @@ var CSS3DRenderer = function () {
 			'scale(' + fov + ')' + 'translate(' + epsilon( tx ) + 'px,' + epsilon( ty ) + 'px)' + getCameraCSSMatrix( camera.matrixWorldInverse ) :
 			'translateZ(' + fov + 'px)' + getCameraCSSMatrix( camera.matrixWorldInverse );
 
-		var style = cameraCSSMatrix +
-			'translate(' + _widthHalf + 'px,' + _heightHalf + 'px)';
+		var cameraTranslateX = _widthHalf;
+		var cameraTranslateY = _heightHalf;
+
+		if ( isSafari && camera.isOrthographicCamera ) {
+
+			cameraTranslateX = Math.round( cameraTranslateX );
+			cameraTranslateY = Math.round( cameraTranslateY );
+
+		}
+
+		var style = cameraCSSMatrix + 'translate(' + cameraTranslateX + 'px,' + cameraTranslateY + 'px)';
 
 		if ( cache.camera.style !== style && ! isIE ) {
 
