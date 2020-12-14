@@ -4,7 +4,7 @@ import {
 	Quaternion,
 	Vector2,
 	Vector3
-} from "../../../build/three.module.js";
+} from '../../../build/three.module.js';
 
 var TrackballControls = function ( object, domElement ) {
 
@@ -408,6 +408,7 @@ var TrackballControls = function ( object, domElement ) {
 		switch ( event.pointerType ) {
 
 			case 'mouse':
+			case 'pen':
 				onMouseDown( event );
 				break;
 
@@ -424,6 +425,7 @@ var TrackballControls = function ( object, domElement ) {
 		switch ( event.pointerType ) {
 
 			case 'mouse':
+			case 'pen':
 				onMouseMove( event );
 				break;
 
@@ -440,6 +442,7 @@ var TrackballControls = function ( object, domElement ) {
 		switch ( event.pointerType ) {
 
 			case 'mouse':
+			case 'pen':
 				onMouseUp( event );
 				break;
 

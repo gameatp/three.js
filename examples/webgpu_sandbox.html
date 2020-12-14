@@ -14,14 +14,16 @@
 
 			import * as THREE from '../build/three.module.js';
 
+			import { DDSLoader } from './jsm/loaders/DDSLoader.js';
+
 			import WebGPURenderer from './jsm/renderers/webgpu/WebGPURenderer.js';
 			import WebGPU from './jsm/renderers/webgpu/WebGPU.js';
 
 			let camera, scene, renderer;
 
-			let mesh;
+			let box;
 
-			init().then( animate ).catch( onInitError );
+			init().then( animate ).catch( error );
 
 			async function init() {
 
@@ -41,37 +43,70 @@
 
 				// textured mesh
 
-				const loader = new THREE.TextureLoader();
-				const texture = loader.load( './textures/uv_grid_opengl.jpg' );
+				const textureLoader = new THREE.TextureLoader();
+				const texture = textureLoader.load( './textures/uv_grid_opengl.jpg' );
 
-				const geometryMesh = new THREE.BoxBufferGeometry();
-				const materialMesh = new THREE.MeshBasicMaterial( { map: texture } );
+				const geometryBox = new THREE.BoxBufferGeometry();
+				const materialBox = new THREE.MeshBasicMaterial( { map: texture } );
 
-				mesh = new THREE.Mesh( geometryMesh, materialMesh );
-				mesh.position.set( - 1, 0.5, 0 );
-				scene.add( mesh );
+				box = new THREE.Mesh( geometryBox, materialBox );
+				box.position.set( 0, 1, 0 );
+				scene.add( box );
+
+				// data texture
+
+				const geometryPlane = new THREE.PlaneBufferGeometry();
+				const materialPlane = new THREE.MeshBasicMaterial( { map: createDataTexture(), transparent: true, opacity: 0.5 } );
+
+				const plane = new THREE.Mesh( geometryPlane, materialPlane );
+				plane.position.set( 0, - 1, 0 );
+				scene.add( plane );
+
+				// compressed texture
+
+				const ddsLoader = new DDSLoader();
+				const dxt5Texture = ddsLoader.load( './textures/compressed/explosion_dxt5_mip.dds' );
+
+				const materialCompressed = new THREE.MeshBasicMaterial( { map: dxt5Texture, transparent: true } );
+
+				const boxCompressed = new THREE.Mesh( geometryBox, materialCompressed );
+				boxCompressed.position.set( - 2, 1, 0 );
+				scene.add( boxCompressed );
 
 				// points
 
-				const geometryPoints = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, - 1, 0 ), new THREE.Vector3( 1, - 1, 0 ) ] );
+				const points = [];
+
+				for ( let i = 0; i < 1000; i ++ ) {
+
+					const point = new THREE.Vector3().random().subScalar( 0.5 );
+					points.push( point );
+
+				}
+
+				const geometryPoints = new THREE.BufferGeometry().setFromPoints( points );
 				const materialPoints = new THREE.PointsMaterial();
 
-				const points = new THREE.Points( geometryPoints, materialPoints );
-				scene.add( points );
+				const pointCloud = new THREE.Points( geometryPoints, materialPoints );
+				pointCloud.position.set( 2, - 1, 0 );
+				scene.add( pointCloud );
 
 				// lines
 
 				const geometryLine = new THREE.BufferGeometry().setFromPoints( [
-					new THREE.Vector3( 1, 0, 0 ),
-					new THREE.Vector3( 2, 0, 0 ),
-					new THREE.Vector3( 2, 1, 0 ),
-					new THREE.Vector3( 1, 1, 0 )
+					new THREE.Vector3( - 0.5, - 0.5, 0 ),
+					new THREE.Vector3( 0.5, - 0.5, 0 ),
+					new THREE.Vector3( 0.5, 0.5, 0 ),
+					new THREE.Vector3( - 0.5, 0.5, 0 )
 				] );
 				const materialLine = new THREE.LineBasicMaterial();
 				const line = new THREE.Line( geometryLine, materialLine );
+				line.position.set( 2, 1, 0 );
 				scene.add( line );
 
-				renderer = new WebGPURenderer();
+				//
+
+				renderer = new WebGPURenderer( { extensions: [ 'texture-compression-bc' ] } );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				document.body.appendChild( renderer.domElement );
@@ -95,14 +130,43 @@
 
 				requestAnimationFrame( animate );
 
-				mesh.rotation.x += 0.01;
-				mesh.rotation.y += 0.02;
+				box.rotation.x += 0.01;
+				box.rotation.y += 0.02;
 
 				renderer.render( scene, camera );
 
 			}
 
-			function onInitError( error ) {
+			function createDataTexture() {
+
+				const color = new THREE.Color( 0xff0000 );
+
+				const width = 512;
+				const height = 512;
+
+				const size = width * height;
+				const data = new Uint8Array( 4 * size );
+
+				const r = Math.floor( color.r * 255 );
+				const g = Math.floor( color.g * 255 );
+				const b = Math.floor( color.b * 255 );
+
+				for ( let i = 0; i < size; i ++ ) {
+
+					const stride = i * 4;
+
+					data[ stride ] = r;
+					data[ stride + 1 ] = g;
+					data[ stride + 2 ] = b;
+					data[ stride + 3 ] = 255;
+
+				}
+
+				return new THREE.DataTexture( data, width, height, THREE.RGBAFormat );
+
+			}
+
+			function error( error ) {
 
 				console.error( error );
 
