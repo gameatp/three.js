@@ -52,15 +52,56 @@ export default QUnit.module( 'Core', () => {
 		} );
 
 		// STATIC STUFF
-		QUnit.todo( "DefaultUp", ( assert ) => {
+		QUnit.test( "DefaultUp", ( assert ) => {
 
-			assert.ok( false, "everything's gonna be alright" );
+			const currentDefaultUp = new Vector3().copy( Object3D.DefaultUp );
+			const v = new Vector3();
+
+			try {
+
+				assert.deepEqual( Object3D.DefaultUp, v.set( 0, 1, 0 ), "default DefaultUp is Y-up" );
+
+				const object = new Object3D();
+
+				assert.deepEqual( object.up, v.set( 0, 1, 0 ), ".up of a new object inherits Object3D.DefaultUp = Y-up" );
+
+				Object3D.DefaultUp.set( 0, 0, 1 );
+
+				const object2 = new Object3D();
+
+				assert.deepEqual( object2.up, v.set( 0, 0, 1 ), ".up of a new object inherits Object3D.DefaultUp = Z-up" );
+
+			} finally {
+
+				Object3D.DefaultUp.copy( currentDefaultUp );
+
+			}
 
 		} );
 
-		QUnit.todo( "DefaultMatrixAutoUpdate", ( assert ) => {
+		QUnit.test( "DefaultMatrixAutoUpdate", ( assert ) => {
 
-			assert.ok( false, "everything's gonna be alright" );
+			const currentDefaultMatrixAutoUpdate = Object3D.DefaultMatrixAutoUpdate;
+
+			try {
+
+				assert.equal( currentDefaultMatrixAutoUpdate, true, "default DefaultMatrixAutoUpdate is true" );
+
+				const object = new Object3D();
+
+				assert.equal( object.matrixAutoUpdate, true, ".matrixAutoUpdate of a new object inherits Object3D.DefaultMatrixAutoUpdate = true" );
+
+				Object3D.DefaultMatrixAutoUpdate = false;
+
+				const object2 = new Object3D();
+
+				assert.equal( object2.matrixAutoUpdate, false, ".matrixAutoUpdate of a new object inherits Object3D.DefaultMatrixAutoUpdate = false" );
+
+			} finally {
+
+				Object3D.DefaultMatrixAutoUpdate = currentDefaultMatrixAutoUpdate;
+
+			}
 
 		} );
 

@@ -325,7 +325,8 @@ Rhino3dmLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 
 					} else {
 
-						var _object = this._createObject( obj, null );
+						var material = this._createMaterial( );
+						var _object = this._createObject( obj, material );
 
 					}
 
@@ -427,13 +428,17 @@ Rhino3dmLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 			case 'PointSet':
 
 				var geometry = loader.parse( obj.geometry );
-				var _color = attributes.drawColor;
-				var color = new Color( _color.r / 255.0, _color.g / 255.0, _color.b / 255.0 );
-				var material = new PointsMaterial( { color: color, sizeAttenuation: false, size: 2 } );
 
+				var material = null;
 				if ( geometry.attributes.hasOwnProperty( 'color' ) ) {
 
-					material.vertexColors = true;
+					material = new PointsMaterial( { vertexColors: true, sizeAttenuation: false, size: 2 } );
+
+				} else {
+
+					var _color = attributes.drawColor;
+					var color = new Color( _color.r / 255.0, _color.g / 255.0, _color.b / 255.0 );
+					material = new PointsMaterial( { color: color, sizeAttenuation: false, size: 2 } );
 
 				}
 
@@ -1241,7 +1246,7 @@ Rhino3dmLoader.Rhino3dmWorker = function () {
 
 		}
 
-		if ( geometry ) {
+		if ( Array.isArray( geometry ) === false || geometry.length > 0 ) {
 
 			var attributes = extractProperties( _attributes );
 			attributes.geometry = extractProperties( _geometry );
@@ -1265,6 +1270,10 @@ Rhino3dmLoader.Rhino3dmWorker = function () {
 			attributes.geometry.objectType = objectType;
 
 			return { geometry, attributes, objectType };
+
+		} else {
+
+			console.warn( 'THREE.3DMLoader: Object has no mesh geometry. Consider opening this in Rhino, using a shaded display mode, and exporting again.' );
 
 		}
 
@@ -1344,11 +1353,17 @@ Rhino3dmLoader.Rhino3dmWorker = function () {
 
 		if ( curve instanceof rhino.NurbsCurve && curve.degree === 1 ) {
 
-			if ( curve.segmentCount === undefined || curve.segmentCount === 1 ) {
+			const pLine = curve.tryGetPolyline();
 
-				return [ curve.pointAtStart, curve.pointAtEnd ];
+			for ( var i = 0; i < pLine.count; i ++ ) {
+
+				rc.push( pLine.get( i ) );
 
 			}
+
+			pLine.delete();
+
+			return rc;
 
 		}
 
