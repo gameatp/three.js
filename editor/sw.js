@@ -100,7 +100,6 @@ const assets = [
 	'./js/libs/tern-threejs/threejs.js',
 
 	'./js/libs/signals.min.js',
-	'./js/libs/fflate-deflate.min.module.js',
 	'./js/libs/ui.js',
 	'./js/libs/ui.three.js',
 
@@ -132,7 +131,11 @@ const assets = [
 	'./js/Sidebar.js',
 	'./js/Sidebar.Scene.js',
 	'./js/Sidebar.Project.js',
+	'./js/Sidebar.Project.Materials.js',
+	'./js/Sidebar.Project.Renderer.js',
+	'./js/Sidebar.Project.Video.js',
 	'./js/Sidebar.Settings.js',
+	'./js/Sidebar.Settings.History.js',
 	'./js/Sidebar.Settings.Shortcuts.js',
 	'./js/Sidebar.Settings.Viewport.js',
 	'./js/Sidebar.Properties.js',
@@ -160,7 +163,6 @@ const assets = [
 	'./js/Sidebar.Material.js',
 	'./js/Sidebar.Animation.js',
 	'./js/Sidebar.Script.js',
-	'./js/Sidebar.History.js',
 	'./js/Strings.js',
 	'./js/Toolbar.js',
 	'./js/Viewport.js',

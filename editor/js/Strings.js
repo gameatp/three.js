@@ -304,12 +304,14 @@ function Strings( config ) {
 			'sidebar/settings/language': 'Language',
 			'sidebar/settings/exportPrecision': 'Export Precision',
 
+			'sidebar/settings/shortcuts': 'Shortcuts',
 			'sidebar/settings/shortcuts/translate': 'Translate',
 			'sidebar/settings/shortcuts/rotate': 'Rotate',
 			'sidebar/settings/shortcuts/scale': 'Scale',
 			'sidebar/settings/shortcuts/undo': 'Undo',
 			'sidebar/settings/shortcuts/focus': 'Focus',
 
+			'sidebar/settings/viewport': 'Viewport',
 			'sidebar/settings/viewport/grid': 'Grid',
 			'sidebar/settings/viewport/helpers': 'Helpers',
 
@@ -628,12 +630,14 @@ function Strings( config ) {
 			'sidebar/settings/language': 'Langue',
 			'sidebar/settings/exportPrecision': 'Précision à l\'exportation',
 
+			'sidebar/settings/shortcuts': 'Shortcuts',
 			'sidebar/settings/shortcuts/translate': 'Position',
 			'sidebar/settings/shortcuts/rotate': 'Rotation',
 			'sidebar/settings/shortcuts/scale': 'Échelle',
 			'sidebar/settings/shortcuts/undo': 'Annuler',
 			'sidebar/settings/shortcuts/focus': 'Focus',
 
+			'sidebar/settings/viewport': 'Viewport',
 			'sidebar/settings/viewport/grid': 'Grille',
 			'sidebar/settings/viewport/helpers': 'Helpers',
 
@@ -936,12 +940,14 @@ function Strings( config ) {
 			'sidebar/settings/language': '语言',
 			'sidebar/settings/exportPrecision': '输出精度',
 
+			'sidebar/settings/shortcuts': 'Shortcuts',
 			'sidebar/settings/shortcuts/translate': '移动',
 			'sidebar/settings/shortcuts/rotate': '旋转',
 			'sidebar/settings/shortcuts/scale': '缩放',
 			'sidebar/settings/shortcuts/undo': '撤销',
 			'sidebar/settings/shortcuts/focus': '聚焦',
 
+			'sidebar/settings/viewport': 'Viewport',
 			'sidebar/settings/viewport/grid': '网格',
 			'sidebar/settings/viewport/helpers': '辅助',
 
