@@ -24,11 +24,10 @@ class WebGPUBindings {
 		if ( data === undefined ) {
 
 			const pipeline = this.pipelines.get( object );
-			const material = object.material;
-
-			const nodeBuilder = this.nodes.get( material );
 
 			// each material defines an array of bindings (ubos, textures, samplers etc.)
+
+			const nodeBuilder = this.nodes.get( object );
 
 			const bindings = nodeBuilder.getBindings();
 
@@ -124,7 +123,7 @@ class WebGPUBindings {
 
 			} else if ( binding.isSampler ) {
 
-				const texture = binding.texture;
+				const texture = binding.getTexture();
 
 				textures.updateSampler( texture );
 
@@ -139,7 +138,7 @@ class WebGPUBindings {
 
 			} else if ( binding.isSampledTexture ) {
 
-				const texture = binding.texture;
+				const texture = binding.getTexture();
 
 				const forceUpdate = textures.updateTexture( texture );
 				const textureGPU = textures.getTextureGPU( texture );
