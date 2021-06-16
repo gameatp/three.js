@@ -654,13 +654,11 @@ function getPointer( event ) {
 
 	} else {
 
-		const pointer = event.changedTouches ? event.changedTouches[ 0 ] : event;
-
 		const rect = this.domElement.getBoundingClientRect();
 
 		return {
-			x: ( pointer.clientX - rect.left ) / rect.width * 2 - 1,
-			y: - ( pointer.clientY - rect.top ) / rect.height * 2 + 1,
+			x: ( event.clientX - rect.left ) / rect.width * 2 - 1,
+			y: - ( event.clientY - rect.top ) / rect.height * 2 + 1,
 			button: event.button
 		};
 
@@ -1175,7 +1173,7 @@ class TransformControlsGizmo extends Object3D {
 
 	updateMatrixWorld( force ) {
 
-		const space = ( this.mode === 'scale' ) ? this.space : 'local'; // scale always oriented to local rotation
+		const space = ( this.mode === 'scale' ) ? 'local' : this.space; // scale always oriented to local rotation
 
 		const quaternion = ( space === 'local' ) ? this.worldQuaternion : _identityQuaternion;
 
